@@ -1,1 +1,1 @@
-# Python_Backend
+# Курс по бэкенд разработке по Python
