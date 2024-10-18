@@ -36,6 +36,9 @@ def put_link(long_link: PutLink) -> PutLink:
 
 @app.put("/val")
 def ValidationFailure(long_link: PutLink) -> Response:
+    """
+    Валидация ссылки
+    """
     if not validators.url("https://misis.ru"):
         return Response(
         content=None, 
@@ -52,7 +55,7 @@ def ValidationFailure(long_link: PutLink) -> Response:
 @app.get("/short/{short_link}")
 def get_link(short_link: str = Path(...)) -> Response:
     """
-    Метод переадресации с короткой ссылки на длинную
+    Метод переадресации с короткой ссылки на длинную ссылку
     """
     long_link = short_link_service.get_link(short_link)
 
