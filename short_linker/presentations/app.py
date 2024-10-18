@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Response, status, Path
 from pydantic import BaseModel
 from services.short_link_service import ShortLinkService
+import validators
 
 
 app = FastAPI(
@@ -26,9 +27,26 @@ def put_link(long_link: PutLink) -> PutLink:
     """
     Метод создания короткой ссылки по длинной ссылке
     """
-    short_link = short_link_service.put_link(long_link.link)
+    if "https://" not in long_link:
+        long_link.append("https://")
 
+    short_link = short_link_service.put_link(long_link.link)
     return PutLink(link=short_link)
+
+
+@app.put("/val")
+def ValidationFailure(long_link: PutLink) -> Response:
+    if not validators.url("https://misis.ru"):
+        return Response(
+        content=None, 
+        headers={"Location": "https://misis.ru"}, 
+        status_code=422,
+        )
+    return Response(
+        content=None, 
+        headers={"Location": "https://misis.ru"}, 
+        status_code=200,
+        )
 
 
 @app.get("/short/{short_link}")
