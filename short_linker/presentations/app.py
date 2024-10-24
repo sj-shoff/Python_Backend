@@ -35,21 +35,30 @@ def put_link(long_link: PutLink) -> PutLink:
 
 
 @app.put("/val")
-def ValidationFailure(long_link: PutLink) -> Response:
+def ValidationFailure(url: PutLink) -> Response:
     """
     Валидация ссылки
     """
-    if not validators.url("https://misis.ru"):
+    if url.startswith(('http://', 'https://')):
+        if not validators.url("https://misis.ru", public = True):
+            return Response(
+            content=None, 
+            headers={"Location": "https://misis.ru"}, 
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            )
+        else:
+            return Response(
+                content=None, 
+                headers={"Location": "https://misis.ru"}, 
+                status_code=status.HTTP_200_OK
+                )
+    else:
         return Response(
-        content=None, 
-        headers={"Location": "https://misis.ru"}, 
-        status_code=422,
+            content=None,
+            headers={"Location": "https://misis.ru"},
+            status_code=status.HTTP_418_IM_A_TEAPOT
         )
-    return Response(
-        content=None, 
-        headers={"Location": "https://misis.ru"}, 
-        status_code=200,
-        )
+
 
 
 @app.get("/short/{short_link}")
@@ -66,3 +75,9 @@ def get_link(short_link: str = Path(...)) -> Response:
         )
 
 
+# url = input('Enter the url: ').lower()
+
+# if url.startswith(('http://', 'https://')):
+#     print('valid url')
+# else:
+#     print('invalid url')
