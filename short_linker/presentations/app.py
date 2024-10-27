@@ -2,6 +2,9 @@ from fastapi import FastAPI, Response, status, Path
 from pydantic import BaseModel
 from services.short_link_service import ShortLinkService
 import validators
+from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+from sqlalchemy.orm import sessionmaker, declarative_base
+import asyncio
 
 
 app = FastAPI(
@@ -39,25 +42,20 @@ def ValidationFailure(url: PutLink) -> Response:
     """
     Валидация ссылки
     """
-    if url.startswith(('http://', 'https://')):
-        if not validators.url("https://misis.ru", public = True):
-            return Response(
-            content=None, 
-            headers={"Location": "https://misis.ru"}, 
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            )
-        else:
-            return Response(
-                content=None, 
-                headers={"Location": "https://misis.ru"}, 
-                status_code=status.HTTP_200_OK
-                )
+
+    if validators.url("https://misis.ru"):
+        return Response(
+        content=None, 
+        headers={"Location": "https://misis.ru"}, 
+        status_code=status.HTTP_200_OK,
+        )
     else:
         return Response(
-            content=None,
-            headers={"Location": "https://misis.ru"},
-            status_code=status.HTTP_418_IM_A_TEAPOT
-        )
+            content=None, 
+            headers={"Location": "https://misis.ru"}, 
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY
+            )
+
 
 
 
