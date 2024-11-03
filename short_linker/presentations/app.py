@@ -2,9 +2,9 @@ from fastapi import FastAPI, Response, status, Path
 from pydantic import BaseModel
 from services.short_link_service import ShortLinkService
 import validators
-from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
-from sqlalchemy.orm import sessionmaker, declarative_base
-import asyncio
+# from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+# from sqlalchemy.orm import sessionmaker, declarative_base
+# import asyncio
 
 
 app = FastAPI(
